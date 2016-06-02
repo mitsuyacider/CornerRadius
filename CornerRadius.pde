@@ -34,35 +34,38 @@ void draw() {
     float apexY = 0;
     float rightX = 0;
     float rightY = 0;
-    if (i >= count - 2) {
-      if( i == count - 1) {
-        leftX = x[i];
-        leftY = y[i];
-        apexX = x[0];
-        apexY = y[0];
-        rightX = x[1];
-        rightY = y[1];              
-      } else {
-        leftX = x[i];
-        leftY = y[i];
-        apexX = x[i + 1];
-        apexY = y[i + 1];
+    if (i >= count - 1) {
+        leftX = x[i - 1];
+        leftY = y[i - 1];
+        apexX = x[i];
+        apexY = y[i];
         rightX = x[0];
-        rightY = y[0];                      
-      }
+        rightY = y[0]; 
     } else {
       if (i == 0) {
-        
+        leftX = x[i];
+        leftY = y[i];        
+        apexX = x[i + 1];
+        apexY = y[i + 1];
       } else {
         leftX = x[i - 1];
         leftY = y[i - 1];
         apexX = x[i];
         apexY = y[i];
         rightX = x[i + 1];
-        rightY = y[i + 1
-        ];        
+        rightY = y[i + 1];        
       }
     }
+    
+    //float p1AnchorX = (leftX + apexX) / 2;
+    //float p1AnchorY = (leftY + apexY) / 2;    
+    //float p2AnchorX = (apexX + rightX) / 2;
+    //float p2AnchorY = (apexY + rightY) / 2;    
+    //float p1ControlX = (apexX + p1AnchorX) / 2;
+    //float p1ControlY = (apexY + p1AnchorY) / 2;
+    //float p2ControlX = (apexX + p2AnchorX) / 2;
+    //float p2ControlY = (apexY + p2AnchorY) / 2;
+    
     
     float p1AnchorX = (leftX + apexX) / 2;
     float p1AnchorY = (leftY + apexY) / 2;    
@@ -71,7 +74,7 @@ void draw() {
     float p1ControlX = (apexX + p1AnchorX) / 2;
     float p1ControlY = (apexY + p1AnchorY) / 2;
     float p2ControlX = (apexX + p2AnchorX) / 2;
-    float p2ControlY = (apexY + p2AnchorY) / 2;
+    float p2ControlY = (apexY + p2AnchorY) / 2;    
     
     
     noFill();
@@ -87,8 +90,8 @@ void draw() {
     if (i == 0) {
       vertex(x[0], y[0]);
     } else {
-      bezierVertex( 50, 450, 150, 450, 450, 450 );
-      bezierVertex( 450, 50, 75, 350, 50, 50 );
+      bezierVertex( p1ControlX, p1ControlY, p2ControlX, p2ControlY, p2AnchorX, p2AnchorY );
+      //bezierVertex( 450, 50, 75, 350, 50, 50 );
 
     }
 
