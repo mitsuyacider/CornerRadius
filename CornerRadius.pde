@@ -21,6 +21,20 @@ float p1ControlY = 0.0;
 float p2ControlX = 0.0;
 float p2ControlY = 0.0;
 
+// animation
+float diffY; 
+float A;  
+float B;  
+float w;  
+float w2; 
+float p;  
+float t1; 
+float t2; 
+float speed = 3.0;
+float time;
+
+float startDeg[];
+
 void setup() {
 
  size(500, 500);
@@ -30,9 +44,25 @@ void setup() {
    defaultX[i] = x[i];
    defaultY[i] = y[i];
  }
+ 
+ 
+  smooth();
+  A = 15.0;    //振幅を設定
+  B = 10.0;
+  w = 10.0;    //角周波数を設定
+  w2 = 40.0;    //角周波数を設定
+  p = 0.0;    //初期位相を設定
+  t2 = 0.0;    //経過時間を初期化
+  time = 0.0;
+  
+  startDeg = new float[6];
+  for (int i = 0; i < 6; i++) {
+    startDeg[i] = i * 30;
+  }
 }
 
 void draw() {
+ update();
  background(255);
  pushMatrix();
  translate(width / 2 - 100, height / 2 - 92);
@@ -55,6 +85,7 @@ void draw() {
    apexY = i == 0 ? y[i + 1] : y[i];
    rightX = i >= count - 1 ? x[0] : x[i + 1];
    rightY = i >= count - 1 ? y[0] : y[i + 1];
+           
    p1AnchorX = (leftX + apexX) / 2;
    p1AnchorY = (leftY + apexY) / 2;
    p2AnchorX = (apexX + rightX) / 2;
@@ -72,7 +103,17 @@ void draw() {
 
    fill(255, 0, 0);
    // draw bezier
-   noStroke();
+   //noStroke();
+   stroke(0, 0, 255);
+   noFill();
+   
+   pushStyle();
+   fill(0);
+   ellipse(p1AnchorX, p1AnchorY, 5, 5);
+   line(p1AnchorX, p1AnchorY, p2AnchorX, p2AnchorY);
+   //ellipse(p2AnchorX, p2AnchorY, 5, 5);
+   popStyle();   
+   
    if (i == 0) {
      vertex(p1AnchorX, p1AnchorY);
    } else {
@@ -85,6 +126,9 @@ void draw() {
        apexY = y[0];
        rightX = x[1];
        rightY = y[1];
+       diffY = -A * sin(w*radians(t2) - p);    //processingのy座標は数学の座標と反対のため、-にする
+       diffY += B * sin(w2 * radians(t2) - p);
+       
        p1AnchorX = (leftX + apexX) / 2;
        p1AnchorY = (leftY + apexY) / 2;
        p2AnchorX = (apexX + rightX) / 2;
@@ -94,12 +138,31 @@ void draw() {
        p2ControlX = (apexX + p2AnchorX) / 2;
        p2ControlY = (apexY + p2AnchorY) / 2;
        bezierVertex( p1ControlX, p1ControlY, p2ControlX, p2ControlY, p2AnchorX, p2AnchorY );
+       
+       pushStyle();
+       fill(0);
+       ellipse(p1AnchorX, p1AnchorY, 5, 5);
+       line(p1AnchorX, p1AnchorY, p2AnchorX, p2AnchorY);
+       //ellipse(p2AnchorX, p2AnchorY, 5, 5);
+       popStyle();       
      }
-   }
+   }   
  }
    endShape(CLOSE);
 
- popMatrix();
+ popMatrix(); 
+}
+
+void update() {
+  for (int i = 0; i < 6; i++) {
+     diffY = -A * sin(w * radians(t2) + radians(startDeg[i]));
+     diffY += B * sin(w2 * radians(t2) + radians(startDeg[i]));
+     x[i] = defaultX[i] + 10 * sin(radians(time + startDeg[i]));
+     //y[i] = defaultY[i] + diffY;
+     y[i] = defaultY[i] + diffY;
+  }
+  time += speed;
+  t2 = 5 * sin(radians(time));
 }
 
 void keyPressed() {
